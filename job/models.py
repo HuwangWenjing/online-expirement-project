@@ -13,7 +13,9 @@ class role(models.Model):
 
     def __str__(self):
         return str(self.role)
-
+# 1. pull 之前已经pull过 就不用了
+# 2. commit
+# 3. push
 
 class student(models.Model):
     gender = (
