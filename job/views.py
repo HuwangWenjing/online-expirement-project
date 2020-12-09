@@ -1,6 +1,6 @@
 import hashlib
 from django.contrib.auth.hashers import make_password
-from job.models import teacher, token, homework, manager, student, course
+from job.models import teacher, token, homework, manager, student, course, question
 from job.serializers import MaInfoSer, TeaInfoSer, StuInfoSer, HomSer,CouSer
 from rest_framework.views import APIView, Response
 from django.conf import settings
@@ -160,23 +160,23 @@ class teacher_homepage(APIView):
         }, status=200)
 
 
-
-
-
-
-
 class publish_homework(APIView):
     def get(self, request):
         token = request.META.get('token')
+        homno = request.POST.get('homno')
         title = request.POST.get('title')
         pubdate = request.POST.get('pubdate')
+        quesno = request.POST.get('quesno')
         cont = request.POST.get('cont')
         corans = request.POST.get('corans')
+        nums = request.POST.get('nums').strip() #获取题目数量
         print(token)
+        print(homno)
         print(title)
         print(pubdate)
         print(cont)
         print(corans)
+        print(nums)
 
         # 1. 查token表 判断是哪个用户在操作
         # 2. 根据查表结果 判断是否合法
@@ -184,11 +184,29 @@ class publish_homework(APIView):
         if isinstance(tea_id, Response):
             return tea_id
 
+        # 如何同时向homework和question中添加记录
         h = homework.objects.create(
             Title = title,
             PubDate = pubdate,
 
         )
+
+        # 向question中批量添加记录
+        if nums.isdigit() and int(nums) > 0:
+
+            question_list = []
+            for i in range(int(nums)):
+                question_list.append(
+                    question(
+                        QuesNo=quesno,
+                        Cont=cont,
+                        Corans=corans
+                    )
+                )
+            question.objects.bulk_create(question_list)  # 使用django.db.models.query.QuerySet.bulk_create()批量创建对象，减少SQL查询次数
+            #messages.info(request, '批量添加{}条数据完成！'.format(nums))
+
+
         return Response({
             'info': 'success',
             'code': 200,
@@ -214,7 +232,6 @@ def s_chk_token(token):
     return t.get().suser.ok
 
 
-
 def m_chk_token(token):
     if token is None:
         return Response({
@@ -229,11 +246,6 @@ def m_chk_token(token):
             'code': 403
         }, status=403)
     return t.get().muser.ok
-
-
-
-
-
 
 
 
