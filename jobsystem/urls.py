@@ -17,22 +17,25 @@ from django.contrib import admin
 from django.urls import path
 from job import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login),
-    #path('teacher_homepage/', views.teacher_homepage),
+    # path('manager_login/', views.manager_login),
+    # path('teacher_login/', views.teacher_login),
+    # path('student_login/', views.student_login),
+    # #path('teacher_homepage/', views.teacher_homepage),
+    # #path('homework/', views.homework.as_view(), name='homework'),
+    # path('homework_publish/', views.homework_publish, name='homework_publish'),
 ]
 
-'''path('course_function/', views.course_function),
-path('sign/', views.sign),
-path('homework/', views.homework),
-path('homework_publish/', views.homework_publish),
-path('homework_list/', views.homework_list),
-path('homework_score/', views.homework_score),
-path('student_homepage/', views.student_mainpage),
-path('student_course/', views.student_course),
-path('student_homework/', views.student_homework),
-path('student_sign/', views.student_sign),
-path('student_finish/', views.student_finish),
-path('student_check/', views.student_check),
-path('logout/', views.logout),'''
+# path('course_function/', views.course_function),
+# path('sign/', views.sign),
+# path('homework_list/', views.homework_list),
+# path('homework_score/', views.homework_score),
+# path('student_homepage/', views.student_mainpage),
+# path('student_course/', views.student_course),
+# path('student_homework/', views.student_homework),
+# path('student_sign/', views.student_sign),
+# path('student_finish/', views.student_finish),
+# path('student_check/', views.student_check),
+# path('logout/', views.logout),

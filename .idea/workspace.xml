@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8b48136d-dc28-40dc-8c45-1e3ba45c9b73" name="Default Changelist" comment="" />
+    <list default="true" id="8b48136d-dc28-40dc-8c45-1e3ba45c9b73" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0002_auto_20201201_1800.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0003_auto_20201203_2233.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0004_auto_20201204_1504.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0005_auto_20201204_1512.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0006_auto_20201204_1757.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0007_auto_20201204_1810.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/0008_auto_20201204_1822.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/templates/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/templates/job/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/templates/job/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/templates/job/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/job/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobsystem/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobsystem/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobsystem/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobsystem/urls.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -11,8 +31,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -25,7 +45,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../teamproject" />
-    <property name="settings.editor.selected.configurable" value="settings.github" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -50,6 +70,14 @@
       <option name="presentableId" value="Default" />
       <updated>1606058506253</updated>
     </task>
+    <task id="LOCAL-00001" summary="这里输你commit的东西的描述就好了~ 然后commit">
+      <created>1607236627528</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1607236627528</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -57,10 +85,16 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="这里输你commit的东西的描述就好了~ 然后commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="这里输你commit的东西的描述就好了~ 然后commit" />
   </component>
 </project>
