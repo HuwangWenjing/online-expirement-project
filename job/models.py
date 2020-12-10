@@ -46,6 +46,7 @@ class manager(models.Model):
 
 
 class notice(models.Model):
+    NoticeNo = models.AutoField(primary_key=True)
     NoticeTitle = models.CharField(max_length=60, verbose_name='通知标题', default='通知标题')
     NoticeContent = models.CharField(max_length=5000, verbose_name='通知内容', default='通知内容')
     NoticePubTime = models.DateTimeField(verbose_name='通知发布时间', default=timezone.now)
@@ -55,9 +56,11 @@ class notice(models.Model):
         on_delete=models.CASCADE,
         verbose_name='发布此通知的管理员编号'
     )
+    class Meta:
+        verbose_name = '通知'
+        verbose_name_plural = '通知'
 
-
-class teacher(models.Model):
+ class teacher(models.Model):
     gender = (
         ('male', "男"),
         ('female', "女"),
