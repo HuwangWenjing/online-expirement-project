@@ -20,6 +20,12 @@ from job import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #path('add_student/', views.add_student),
+    #path('add_teacher/', views.add_teacher),
+    #path('add_course/', views.add_course),
+    #path('admin_find_course/', views.admin_find_course),
+    #path('add_notice/', views.add_notice),
+    #path('is_admin/', views.is_admin),
     # path('manager_login/', views.manager_login),
     # path('teacher_login/', views.teacher_login),
     # path('student_login/', views.student_login),
