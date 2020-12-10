@@ -44,23 +44,6 @@ class manager(models.Model):
     MaName = models.CharField(max_length=50, verbose_name='管理员姓名')
     MaPassWord = models.CharField(max_length=16, verbose_name='管理员密码', default='123456')
 
-class submission(models.Model):
-    SubNo = models.CharField(max_length=50, verbose_name='提交编号',primary_key=True)
-    Ans = models.CharField(max_length=50, verbose_name='学生答案', null=True, blank=True)
-    Score = models.FloatField(verbose_name='作业成绩')
-    SubTime = models.DateTimeField(verbose_name='提交时间',default=timezone.now)
-
-    HomeNo = models.ForeignKey(
-        'homework',
-        on_delete=models.CASCADE,
-        verbose_name='作业编号'
-    )
-
-    def __str__(self):
-        return self.StuNo
-
-    class Meta:
-        ordering = ['-SubTime']
 
 class notice(models.Model):
     NoticeTitle = models.CharField(max_length=60, verbose_name='通知标题', default='通知标题')
@@ -97,7 +80,7 @@ class course(models.Model):
     CuNo = models.CharField(max_length=50, verbose_name='课程编号', primary_key=True)
     CuName = models.CharField(max_length=50, verbose_name='课程名称')
 
-    TeaNo = models.OneToOneField(
+    TeaNo = models.ForeignKey(
         'teacher',
         on_delete=models.CASCADE,
         verbose_name='上这门课程的教师编号'
@@ -121,8 +104,9 @@ class course(models.Model):
 class homework(models.Model):
     HomNo = models.IntegerField(verbose_name='作业id', primary_key=True)
     Title = models.CharField(max_length=50, verbose_name='作业标题', default='a')
-    PubDate = models.DateField(verbose_name='发布日期', default=timezone.now)
-
+    PubTime = models.DateTimeField(verbose_name='发布时间', default=timezone.now)
+    SubTime = models.DateTimeField(verbose_name='提交时间', default=timezone.now)
+    TotalGrade = models.FloatField(verbose_name='总成绩', default='100')
     CuNo = models.ForeignKey(
         'course',
         on_delete=models.CASCADE,
@@ -130,16 +114,21 @@ class homework(models.Model):
     )
 
     class Meta:
-        ordering = ['-PubDate']
+        ordering = ['-PubTime']
 
     def __str__(self):
         return self.Title
 
 
 class question(models.Model):
-    QuesNo = models.IntegerField(verbose_name='题号', primary_key=True)
+    QuesNo = models.IntegerField(verbose_name='题号')
+    Type = models.IntegerField(verbose_name='题目类型') #1选择 2填空 3判断 4简答 5编程
     Cont = models.CharField(max_length=5000, verbose_name='题目')
-    CorAns = models.CharField(max_length=5000, verbose_name='题目答案')
+    Ans = models.CharField(max_length=5000, verbose_name='答案')
+    Score = models.FloatField(verbose_name='题目分值')
+    Grade = models.FloatField(verbose_name='学生得分')
+
+    isCorrect = models.BooleanField(default = False)
 
     HomNo = models.ForeignKey(
         'homework',
@@ -152,7 +141,6 @@ class question(models.Model):
 
     def __str__(self):
         return self.Cont
-
 
 
 class sign(models.Model):
