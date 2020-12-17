@@ -1,27 +1,51 @@
-import hashlib
-from django.contrib.auth.hashers import make_password
-from job.models import teacher, manager, student, course, question, token, homework
-from job.serializers import MaInfoSer, TeaInfoSer, StuInfoSer, CouSer, HomSer
+from job.models import course, question, homework, answer, submission
+from job.serializers import HomeworkSer, StuAnswerSer, QuestionSer, SubmissionSer
 from rest_framework.views import APIView, Response
-from django.utils import timezone
-import time
-from django.db.models import Avg, Sum
-from job.views import t_chk_token
+from django.db.models import Avg, Sum, Max, Min
+from job.views import t_chk_token, chk_course_id, chk_submission_id, chk_homework_id
 
-# 教师发布作业. ##########选择题、判断、填空、问答和编程
+# 教师get作业列表 √
+class teacher_get_homework_list(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        course_id=request.GET.get('course_id')
+
+        # 查token确认用户
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+         return tea_id
+        # 确认是哪门课
+        c = chk_course_id(course_id)
+        if isinstance(c, Response):
+            return c
+        # 获取作业列表
+        homework_list = homework.objects.filter(CourseNo=course_id)
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': HomeworkSer(homework_list).data
+        }, status=200)
+
+
+# 教师发布作业 √
 class publish_homework(APIView):
     def post(self, request):
         token = request.META.get('token')
-        homno = request.POST.get('homno')
+        course_id = request.GET.get('course_id')
+
+        title = request.POST.get('title')
+
         quesno = request.POST.get('quesno')
         type = request.POST.get('type')
-        title = request.POST.get('title')
-        pubtime = request.POST.get('pubtime')
-
-        cont = request.POST.get('cont')
-        corans = request.POST.get('corans')
+        content = request.POST.get('content')
+        correctans = request.POST.get('correctans')
         score = request.POST.get('score')
+        #Python strip() 方法用于移除字符串头尾指定的字符（默认为空格或换行符）或字符序列。
         quesnums = request.POST.get('quesnums').strip() #获取题目数量
+
+        pubtime = request.POST.get('pubtime')
+        endtime = request.POST.get('endtime')
 
         # 1. 查token表 判断是哪个用户在操作
         # 2. 根据查表结果 判断是否合法
@@ -29,32 +53,38 @@ class publish_homework(APIView):
         if isinstance(tea_id, Response):
             return tea_id
 
-        ph = homework.objects.create(
-            HomNo=homno,
+        # 查是哪门课的
+        c = chk_course_id(course_id)
+        if isinstance(c, Response):
+            return c
+
+        # 向作业表中添加记录
+        create_homework = homework.objects.create(
+            # HomNo=homno,
             Title=title,
             PubTime=pubtime,
+            Endtime=endtime,
+            # 这里可能要改
+            CourseNo=c #与课程表关联起来
         )
 
         # 向question中批量添加记录
-        if quesnums.isdigit() and int(quesnums) > 0:
-            question_list = []
+        if quesnums.isdigit() and int(quesnums) > 0:  #Python isdigit() 方法检测字符串是否只由数字组成。
             for i in range(int(quesnums)):
-                question_list.append(
-                    question(
-                        QuesNo=quesno,
-                        Cont=cont,
-                        Ans=corans,
-                        HomNo=ph,
-                        Score=score,
-                        isCorrect=True,
-                    )
+                create_question = question.objects.create(
+                    QuesNo=quesno,
+                    Type=type,
+                    Content=content,
+                    CorrectAnswer=correctans,
+                    Score=score,
+                    # 将题目和作业关联起来
+                    HomeworkID=create_homework,
                 )
-            p = question.objects.bulk_create(question_list)  # 使用django.db.models.query.QuerySet.bulk_create()批量创建对象，减少SQL查询次数
-            #messages.info(request, '批量添加{}条数据完成！'.format(nums))
+
             return Response({
                 'info': 'success',
                 'code': 200,
-                'data': HomSer(ph, p).data
+                'data': HomeworkSer(create_homework, create_question).data
             }, status=200)
 
         else:
@@ -64,77 +94,152 @@ class publish_homework(APIView):
             }, status=400)
 
 
-# 教师手动批改作业   跨表查询
+# 教师get作业详细内容 √
+class teacher_get_homework_detail(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        homework_id=request.GET.get('homework_id')
+
+        # 查token确认用户
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
+        # 确认是哪门课
+        h = chk_homework_id(homework_id)
+        if isinstance(h, Response):
+            return h
+        # 获取作业详情
+        homework_detail=question.objects.filter(HomeworkID=homework_id)
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': QuestionSer(homework_detail).data
+        }, status=200)
+
+
+def analize_homework(hom_id):
+    return
+# 教师get学生完成情况列表 & 作业情况分析还未写
+
+class get_completed_list(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        homework_id=request.GET.get('homework_id')
+
+        # 查token确认用户
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
+        # 确认是哪门课
+        h = chk_homework_id(homework_id)
+        if isinstance(h, Response):
+            return h
+        # 获取学生完成情况列表
+        student_homework_list = submission.objects.filter(HomeworkID=homework_id)
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': SubmissionSer(student_homework_list).data
+        }, status=200)
+
+
+# 教师get学生已完成的作业 √
+class get_completed_homework(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        submission_id=request.GET.get('submission_id')
+
+        # 查token确认用户
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
+        # 确认是哪门课
+        s = chk_submission_id(submission_id)
+        if isinstance(s, Response):
+            return s
+        # 获取提交内容详情
+        answer_detail = answer.objects.filter(SubmissionID=submission_id)
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': StuAnswerSer(answer_detail).data
+        }, status=200)
+
+
+# 教师手动批改主观题 √
 class manual_score(APIView):
     def post(self, request):
         token = request.META.get('token')
-        auto = request.POST.get('isAuto')
+        submission_id = request.GET.get('submission_id')
         nums = request.POST.get('nums')
-        quesno = request.POST.get('quesno')
+        quesno = request.POST.get('quesno')  # 要将分数和题号匹配起来，怎么做到
         grade = request.POST.get('grade')
-        stuno = request.POST.get('stuno')
 
-        if auto == 0:
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
 
-            tea_id = t_chk_token(token)
-            if isinstance(tea_id, Response):
-                return tea_id
+        s = chk_submission_id(submission_id)
+        if isinstance(s, Response):
+            return s
 
-            if nums.isdigit() and int(nums) > 0:
-                for i in range(int(nums)):
-                    q = question.objects.filter(QuesNo=quesno, isCorrect=False)
-                    q.Grade = grade
-                    q.save()
-
-            stuhom = homework.objects.get(course__StuNo=stuno)  # 取出作业表中某学生的记录
-            allquestion = question.objects.filter(homework__course__StuNo=stuno)  # 取出题目表中该学生的所有题
-            totalgrade = allquestion.aggregate(Sum('Grade'))  # 对取出来的所有题的成绩字段的值加总
-            stuhom.TotalGrade = totalgrade  # 更新TotalGrade字段
-            stuhom.save()
-
-            return Response({
-                'info': 'success',
-                'code': 200,
-                'data': HomSer(stuhom)
-            }, status=200)
-
-
-# 系统自动批改作业
-class auto_score(APIView):
-    def post(self, request):
-        auto = request.POST.get('isAuto')
-        nums = request.POST.get('nums')
-        stuno = request.POST.get('stuno')
-
-        if auto==1: #教师选择自动批改
-            #按题目顺序循环
+        if nums.isdigit() and int(nums) > 0:
             for i in range(int(nums)):
-                #取出学生答案记录isCorrect=False的学生答案和标准答案记录isCorrect=True的标准答案————题号相同
-                t=question.objects.get(QuesNo=i, isCorrect=True).Ans
-                s=question.objects.get(QuesNo=i, isCorrect=False).Ans
-                a=question.objects.get(QuesNo=i, isCorrect=False)
-                #取出某道题标准答案的分值
-                score= question.objects.get(QuesNo=i).Score
-                #比较学生答案和标准答案
-                #如果相同：
-                if t==s:
-                    #满分
-                    a.Grade=score
-                    a.save()
-                #如果不相同：
-                else:
-                    #零分
-                    a.Grade='0'
-                    a.save()
-            #循环结束，将所有题的分加总得到总分
-            stuhom=homework.objects.get(course__StuNo=stuno) #取出作业表中某学生的记录
-            allquestion=question.objects.filter(homework__course__StuNo=stuno) #取出题目表中该学生的所有题
-            totalgrade=allquestion.aggregate(Sum('Grade')) #对取出来的所有题的成绩字段的值加总
-            stuhom.TotalGrade=totalgrade #更新TotalGrade字段
-            stuhom.save()
+                # 将小题分数循环存入answer表
+                update_grade = answer.objects.filter(SubmissionID=submission_id, QuesNo=i)
+                update_grade.Grade = grade
+                update_grade.save()
 
-            return Response({
-                'info': 'success',
-                'code': 200,
-                'data': HomSer(stuhom)
-            }, status=200)
+        return Response({
+            'info': 'success',
+            'code': 200,
+            # 括号中的是不是要改一下
+            'data': StuAnswerSer(update_grade).data
+        }, status=200)
+
+
+class homework_analysis(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        homework_id=request.GET.get('homework_id')
+
+        # 查token确认用户
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
+        # 确认是哪门课
+        h = chk_homework_id(homework_id)
+        if isinstance(h, Response):
+            return h
+        # 本次作业人数，平均分，满分，最高分，最低分，各分数人数分布，每道题目回答的正确率；
+        ##### 本次作业需完成人数
+        course_id=homework.obejcts.first(pk=homework_id).CourseNo
+        all_counts=course.objects.filter(CourseNo=course_id).count()
+        # 先提取出提交表中本次作业的所有提交记录
+        all_submission=submission.objects.filter(HomeworkID=homework_id)
+        ##### 本次作业提交人数
+        # count作业id为homeworkid的提交记录数量
+        submission_counts=all_submission.counts()
+        ##### 平均分
+        # 先提取出提交表中本次作业的所有提交记录，然后对TotalGrade求平均
+        average=all_submission.aggregate(Avg('TotalGrade'))
+        ##### 满分
+        all_question=question.objects.filter(HomeworkID=homework_id)
+        total_score=all_question.aggregate(Sum('Score'))
+        ##### 最高分
+        max=all_submission.aggregate(Max('TotalGrade'))
+        ##### 最低分
+        min=all_submission.aggregate(Min('TotalGrade'))
+        ##### 各分数人数分布
+
+        nums=all_question.count()
+        ##### 每道题的正确率
+        # 正确率=满分数/总提交数
+        # 满分数=答案表中所有Grade==Score的记录
+        for i in range(int(nums)):
+            question_score=question.objects.get(QuesNo=i).Score
+            full_counts=answer.objects.filter(Grade=question_score).count()
+            accuracy=full_counts/submission_counts

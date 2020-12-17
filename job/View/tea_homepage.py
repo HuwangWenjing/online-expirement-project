@@ -1,5 +1,5 @@
 from job.models import teacher
-from job.serializers import CouSer
+from job.serializers import TeacherSer
 from rest_framework.views import APIView, Response
 from django.utils import timezone
 from job.views import t_chk_token, chk_course_id
@@ -9,9 +9,7 @@ from job.views import t_chk_token, chk_course_id
 class teacher_homepage(APIView):
     def get(self, request):
         token = request.META.get('token')
-        cou_id = request.GET.get('course_id')  ######改不改
-        print(token)
-        print(cou_id)
+        cou_id = request.GET.get('course_id')
 
         tea_id = t_chk_token(token)
         if isinstance(tea_id, Response):
@@ -32,5 +30,5 @@ class teacher_homepage(APIView):
         return Response({
             'info': 'success',
             'code': 200,
-            'data': CouSer(th).data
+            'data': TeacherSer(th).data
         }, status=200)
