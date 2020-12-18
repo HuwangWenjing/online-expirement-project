@@ -1,8 +1,7 @@
 from job.models import student
-from job.serializers import StudentSer, CouSer
+from job.serializers import CouSer
 from rest_framework.views import APIView, Response
-from django.utils import timezone
-from job.views import s_chk_token, chk_course_id
+from job.views import s_chk_token
 
 # 学生端主页-课程列表
 class student_course(APIView):
@@ -12,8 +11,8 @@ class student_course(APIView):
         stu_id = s_chk_token(token)
         if isinstance(stu_id, Response):
             return stu_id
-
-        course_list = student.objects.get(pk=stu_id).CourseNo.all()
+        print(stu_id)
+        course_list = student.objects.get(pk=stu_id).Course.all()
 
         return Response({
             'info': 'success',

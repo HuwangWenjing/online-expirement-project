@@ -1,34 +1,21 @@
-from job.models import teacher
-from job.serializers import TeacherSer
+from job.models import teacher, course
+from job.serializers import CouSer
 from rest_framework.views import APIView, Response
-from django.utils import timezone
-from job.views import t_chk_token, chk_course_id
-
+from job.views import t_chk_token
 
 # 教师端主页-课程列表
 class teacher_course(APIView):
     def get(self, request):
-        token = request.META.get('token')
-        cou_id = request.GET.get('course_id')
+        token = request.META.get('HTTP_TOKEN')
 
         tea_id = t_chk_token(token)
         if isinstance(tea_id, Response):
             return tea_id
-        t = teacher.objects.get(pk=tea_id)
 
-        c = chk_course_id(cou_id)
-        if isinstance(c, Response):
-            return c
-        th = teacher.objects.filter(TeaNo=t, CuNo=c)
-        if th:
-            th = th.get()
-            th.last_modified = timezone.now()
-            th.save()
-        else:
-            th = teacher.objects.create(TeaNo=t, CuNo=c)
+        course_list = teacher.objects.get(pk=tea_id).teacher_courses.all()
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': TeacherSer(th).data
+            'data': CouSer(course_list, many=True).data
         }, status=200)

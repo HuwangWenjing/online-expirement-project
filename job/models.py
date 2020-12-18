@@ -77,6 +77,7 @@ class course(models.Model):
         'teacher',
         verbose_name='教师编号',
         on_delete=models.CASCADE,
+        related_name='teacher_courses'
     )
 
     Student=models.ManyToManyField(
@@ -105,6 +106,7 @@ class homework(models.Model):
         'course',
         verbose_name='课程编号',
         on_delete=models.CASCADE,
+        related_name='course_homework'
     )
 
     def __str__(self):
@@ -140,8 +142,8 @@ class question(models.Model):
 
 class submission(models.Model):
     StudentNo=models.CharField(verbose_name='学生学号', max_length=50)
-    SubTime=models.CharField(verbose_name='提交时间', max_length=50)
-    TotalGrade=models.FloatField(verbose_name='总成绩', default='0')
+    SubTime=models.DateTimeField(verbose_name='提交时间', max_length=50)
+    TotalGrade=models.FloatField(verbose_name='总成绩', default='0', null=True)
 
     isSubmitted=models.BooleanField(verbose_name='是否提交', default=False)
 
@@ -169,6 +171,7 @@ class answer(models.Model):
         'submission',
         verbose_name='提交编号',
         on_delete = models.CASCADE,
+        related_name='submission'
     )
 
     def __str__(self):

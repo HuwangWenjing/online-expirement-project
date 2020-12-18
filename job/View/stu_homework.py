@@ -5,10 +5,10 @@ from job.views import s_chk_token, chk_course_id, chk_homework_id, chk_submissio
 from django.db.models import Sum
 import django.utils.timezone as timezone
 
-# 学生get作业列表 √
+# 学生get作业列表
 class student_get_homework(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         course_id=request.GET.get('course_id')
 # 查token确认用户
         stu_id = s_chk_token(token)
@@ -18,20 +18,21 @@ class student_get_homework(APIView):
         c = chk_course_id(course_id)
         if isinstance(c, Response):
             return c
+
 # 获取作业列表
         time_now=timezone.now()
         # 过期作业,截止时间小于等于现在
-        expired_homework = homework.objects.filter(CourseNo=course_id, EndTime__lte=time_now)
+        expired_homework = homework.objects.filter(Course=course_id)#, EndTime__lte=time_now
         # 未过期作业，截止时间大于现在
-        unexpired_homework = homework.objects.filter(CourseNo=course_id, EndTime_gt=time_now)
+        # unexpired_homework = homework.objects.filter(Course=course_id, EndTime__gt=time_now)
 # 将作业时间状态存入数据库，默认为未过期，所以只用更新已过期的作业记录
-        expired_homework.isExpired = True
-        expired_homework.save()
+#         expired_homework.isExpired = True
+#         expired_homework.save()
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': HomeworkSer(expired_homework, unexpired_homework).data
+            'data': HomeworkSer(expired_homework, many=True).data
         }, status=200)
 
 
@@ -49,12 +50,12 @@ class student_get_homework_detail(APIView):
         if isinstance(h, Response):
             return h
 # 获取题目列表
-        questions = question.objects.filter(homework__pk=homework_id)
+        questions = question.objects.filter(Homework=homework_id).order_by('QuesNo')
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': QuestionSer(questions).data
+            'data': QuestionSer(questions, many=True).data
         }, status=200)
 
 

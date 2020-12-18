@@ -1,5 +1,5 @@
 from job.models import course, question, homework, answer, submission, analysis
-from job.serializers import HomeworkSer, StuAnswerSer, QuestionSer, SubmissionSer, AnalysisSer
+from job.serializers import HomeworkSer, StuAnswerSer, QuestionSer, SubmissionSer, AnalysisSer, CouSer
 from rest_framework.views import APIView, Response
 from django.db.models import Avg, Sum, Max, Min
 from job.views import t_chk_token, chk_course_id, chk_submission_id, chk_homework_id
@@ -7,7 +7,7 @@ from job.views import t_chk_token, chk_course_id, chk_submission_id, chk_homewor
 # 教师get作业列表 √
 class teacher_get_homework_list(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         course_id=request.GET.get('course_id')
 
         # 查token确认用户
@@ -19,16 +19,16 @@ class teacher_get_homework_list(APIView):
         if isinstance(c, Response):
             return c
         # 获取作业列表
-        homework_list = homework.objects.filter(CourseNo=course_id)
+        homework_list = homework.objects.filter(Course=course_id)
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': HomeworkSer(homework_list).data
+            'data': HomeworkSer(homework_list, many=True).data
         }, status=200)
 
 
-# 教师发布作业 √
+# 教师发布作业
 class publish_homework(APIView):
     def post(self, request):
         token = request.META.get('token')
@@ -97,7 +97,7 @@ class publish_homework(APIView):
 # 教师get作业详细内容 √
 class teacher_get_homework_detail(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         homework_id=request.GET.get('homework_id')
 
         # 查token确认用户
@@ -108,20 +108,21 @@ class teacher_get_homework_detail(APIView):
         h = chk_homework_id(homework_id)
         if isinstance(h, Response):
             return h
+
         # 获取作业详情
-        homework_detail=question.objects.filter(HomeworkID=homework_id)
+        homework_detail=question.objects.filter(Homework=homework_id).order_by('QuesNo')
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': QuestionSer(homework_detail).data
+            'data': QuestionSer(homework_detail,many=True).data
         }, status=200)
 
 
-# 教师get学生完成情况列表
+# 教师get学生完成情况列表 √
 class get_completed_list(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         homework_id=request.GET.get('homework_id')
 
         # 查token确认用户
@@ -132,20 +133,21 @@ class get_completed_list(APIView):
         h = chk_homework_id(homework_id)
         if isinstance(h, Response):
             return h
+
         # 获取学生完成情况列表
-        student_homework_list = submission.objects.filter(HomeworkID=homework_id)
+        student_homework_list = submission.objects.filter(Homework=homework_id).order_by('-id')
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': SubmissionSer(student_homework_list).data
+            'data': SubmissionSer(student_homework_list, many=True).data
         }, status=200)
 
 
 # 教师get学生已完成的作业 √
 class get_completed_homework(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         submission_id=request.GET.get('submission_id')
 
         # 查token确认用户
@@ -156,17 +158,18 @@ class get_completed_homework(APIView):
         s = chk_submission_id(submission_id)
         if isinstance(s, Response):
             return s
+
         # 获取提交内容详情
-        answer_detail = answer.objects.filter(SubmissionID=submission_id)
+        answer_detail = answer.objects.filter(Submission=submission_id).order_by('QuesNo')
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': StuAnswerSer(answer_detail).data
+            'data': StuAnswerSer(answer_detail, many=True).data
         }, status=200)
 
 
-# 教师手动批改主观题 √
+# 教师手动批改主观题
 class manual_score(APIView):
     def post(self, request):
         token = request.META.get('token')
@@ -260,7 +263,7 @@ class homework_analysis(APIView):
 # 删除作业 √
 class delete_homework(APIView):
     def get(self, request):
-        token=request.META.get('token')
+        token=request.META.get('HTTP_TOKEN')
         homework_id=request.GET.get('homework_id')
 
         tea_id = t_chk_token(token)
@@ -271,11 +274,10 @@ class delete_homework(APIView):
         if isinstance(h, Response):
             return h
 
-        res = HomeworkSer(h).data
         h.delete()
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': res
+            'data': HomeworkSer(h).data
         }, status=200)
