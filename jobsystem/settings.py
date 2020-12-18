@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,27 +26,34 @@ SECRET_KEY = 'o4v8wpchms49v0f17q6&in5s2ad*)@%6!2k&3_fi*9s_pqwi-h'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+#允许所有的请求头
+CORS_ALLOW_HEADERS = ('*')
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'job',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'corsheaders',
+    'job',
     'rest_framework',
     'rest_framework.authtoken'
 ]
 
+# CORS_ORIGIN_ALLOW_ALL = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -58,7 +66,7 @@ ROOT_URLCONF = 'jobsystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,6 +78,10 @@ TEMPLATES = [
         },
     },
 ]
+# STATIC_URL = '/frontend/'  # 修改的行
+# # STATICFILES_DIRS = [
+# #     os.path.join(BASE_DIR, 'frontend')  # 修改的行
+# # ,]
 
 WSGI_APPLICATION = 'jobsystem.wsgi.application'
 
@@ -82,9 +94,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': 'zhk52601..@',
         'HOST': '8.131.63.10',
-        'PORT': '3306',
+        'PORT': '35888',
     }
 }
 
@@ -119,7 +131,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

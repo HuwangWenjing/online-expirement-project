@@ -1,5 +1,6 @@
-from job.models import teacher, manager, student
+from job.models import teacher, manager, student, token
 from rest_framework.views import APIView, Response
+from job.serializers import ManagerSer, TeacherSer, StudentSer
 from job.views import md5
 
 
@@ -7,7 +8,7 @@ from job.views import md5
 class login(APIView):
     authentication_classes = []
 
-    def get(self, request):
+    def post(self, request):
         uname = request.POST.get('username')
         pwd = request.POST.get('password')
         ro = request.POST.get('role')
@@ -20,7 +21,7 @@ class login(APIView):
 
         if ro == 1:
             try:
-                m= manager.objects.get(MaNo = uname)
+                m= manager.objects.get(ManagerNo=uname)
             except:
                 return Response({
                     'info': '用户名不存在',
@@ -28,9 +29,9 @@ class login(APIView):
                 }, status=403)
             if pwd == m.MPassword:
                 # 登录成功后生成token
-                token = md5(m)
-                token.objects.update_or_create(muser=uname, defaults={'token': token})
-                res = {'info': 'success', 'token': token, 'code': 200, 'data': MaInfoSer(m).data}
+                token_str = md5(m.ManagerNo)
+                token.objects.update_or_create(muser=m, defaults={'token': token_str})
+                res = {'info': 'success', 'token': token_str, 'code': 200, 'data': ManagerSer(m).data}
                 return Response(res)
             else:
                 return Response({
@@ -40,7 +41,7 @@ class login(APIView):
 
         elif ro == 2:
             try:
-                t= teacher.objects.get(TeaNo = uname)
+                t= teacher.objects.get(TeacherNo = uname)
             except:
                 return Response({
                     'info': '用户名不存在',
@@ -48,9 +49,9 @@ class login(APIView):
                 }, status=403)
             if pwd == t.TPassword:
                 # 登录成功后生成token
-                token = md5(t)
-                token.objects.update_or_create(tuser=uname, defaults={'token': token})
-                res = {'info': 'success', 'token': token, 'code': 200, 'data': TeaInfoSer(t).data}
+                token_str = md5(t.TeacherNo)
+                token.objects.update_or_create(tuser=t, defaults={'token': token_str})
+                res = {'info': 'success', 'token': token_str, 'code': 200, 'data': TeacherSer(t).data}
                 return Response(res)
             else:
                 return Response({
@@ -60,7 +61,7 @@ class login(APIView):
 
         else:
             try:
-                s = student.objects.get(StuNo=uname)
+                s = student.objects.get(StudentNo=uname)
             except:
                 return Response({
                     'info': '用户名不存在',
@@ -68,9 +69,9 @@ class login(APIView):
                 }, status=403)
             if pwd == s.SPassword:
                 # 登录成功后生成token
-                token = md5(s)
-                token.objects.update_or_create(suser=uname, defaults={'token': token})
-                res = {'info': 'success', 'token': token, 'code': 200, 'data': StuInfoSer(s).data}
+                token_str = md5(s.StudentNo)
+                token.objects.update_or_create(suser=s, defaults={'token': token_str})
+                res = {'info': 'success', 'token': token_str, 'code': 200, 'data': StudentSer(s).data}
                 return Response(res)
             else:
                 return Response({

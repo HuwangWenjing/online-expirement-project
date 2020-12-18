@@ -1,5 +1,5 @@
 from job.models import student
-from job.serializers import CouSer
+from job.serializers import StudentSer
 from rest_framework.views import APIView, Response
 from django.utils import timezone
 from job.views import s_chk_token, chk_course_id
@@ -31,5 +31,5 @@ class student_homepage(APIView):
         return Response({
             'info': 'success',
             'code': 200,
-            'data': CouSer(sh).data
+            'data': StudentSer(sh).data
         }, status=200)

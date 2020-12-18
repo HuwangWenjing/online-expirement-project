@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import manager, teacher, student, course, homework, question, answer, submission
+from .models import manager, teacher, student, course, homework, question, answer, submission, analysis
 
 class ManagerSer(serializers.ModelSerializer):
 
@@ -57,3 +57,9 @@ class CouSer(serializers.ModelSerializer):
         model = course
         fields = '__all__'
 
+
+class AnalysisSer(serializers.ModelSerializer):
+
+    class Meta:
+        model = analysis
+        fields = '__all__'

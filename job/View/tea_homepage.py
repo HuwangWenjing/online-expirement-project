@@ -4,7 +4,7 @@ from rest_framework.views import APIView, Response
 from django.utils import timezone
 from job.views import t_chk_token, chk_course_id
 
-# https://www.cnblogs.com/zhangsanfeng/p/9209553.html
+
 # 教师端主页-课程列表
 class teacher_homepage(APIView):
     def get(self, request):

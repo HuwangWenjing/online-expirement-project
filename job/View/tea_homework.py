@@ -1,5 +1,5 @@
-from job.models import course, question, homework, answer, submission
-from job.serializers import HomeworkSer, StuAnswerSer, QuestionSer, SubmissionSer
+from job.models import course, question, homework, answer, submission, analysis
+from job.serializers import HomeworkSer, StuAnswerSer, QuestionSer, SubmissionSer, AnalysisSer
 from rest_framework.views import APIView, Response
 from django.db.models import Avg, Sum, Max, Min
 from job.views import t_chk_token, chk_course_id, chk_submission_id, chk_homework_id
@@ -118,10 +118,7 @@ class teacher_get_homework_detail(APIView):
         }, status=200)
 
 
-def analize_homework(hom_id):
-    return
-# 教师get学生完成情况列表 & 作业情况分析还未写
-
+# 教师get学生完成情况列表
 class get_completed_list(APIView):
     def get(self, request):
         token=request.META.get('token')
@@ -201,6 +198,7 @@ class manual_score(APIView):
         }, status=200)
 
 
+# 作业情况分析
 class homework_analysis(APIView):
     def get(self, request):
         token=request.META.get('token')
@@ -228,18 +226,56 @@ class homework_analysis(APIView):
         average=all_submission.aggregate(Avg('TotalGrade'))
         ##### 满分
         all_question=question.objects.filter(HomeworkID=homework_id)
-        total_score=all_question.aggregate(Sum('Score'))
+        full=all_question.aggregate(Sum('Score'))
         ##### 最高分
         max=all_submission.aggregate(Max('TotalGrade'))
         ##### 最低分
         min=all_submission.aggregate(Min('TotalGrade'))
-        ##### 各分数人数分布
 
-        nums=all_question.count()
-        ##### 每道题的正确率
-        # 正确率=满分数/总提交数
-        # 满分数=答案表中所有Grade==Score的记录
-        for i in range(int(nums)):
-            question_score=question.objects.get(QuesNo=i).Score
-            full_counts=answer.objects.filter(Grade=question_score).count()
-            accuracy=full_counts/submission_counts
+        create_analysis=analysis.objects.create(
+            AllCounts=all_counts,
+            SubCounts=submission_counts,
+            Average=average,
+            Full=full,
+            Max=max,
+            Min=min
+        )
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': AnalysisSer(create_analysis).data
+        }, status=200)
+
+        # nums=all_question.count()
+        # ##### 每道题的正确率
+        # # 正确率=满分数/总提交数
+        # # 满分数=答案表中所有Grade==Score的记录
+        # for i in range(int(nums)):
+        #     question_score=question.objects.get(QuesNo=i).Score
+        #     full_counts=answer.objects.filter(Grade=question_score).count()
+        #     accuracy=full_counts/submission_counts
+
+
+# 删除作业 √
+class delete_homework(APIView):
+    def get(self, request):
+        token=request.META.get('token')
+        homework_id=request.GET.get('homework_id')
+
+        tea_id = t_chk_token(token)
+        if isinstance(tea_id, Response):
+            return tea_id
+
+        h = chk_homework_id(homework_id)
+        if isinstance(h, Response):
+            return h
+
+        res = HomeworkSer(h).data
+        h.delete()
+
+        return Response({
+            'info': 'success',
+            'code': 200,
+            'data': res
+        }, status=200)
