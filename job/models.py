@@ -56,14 +56,12 @@ class course(models.Model):
         'teacher',
         verbose_name='教师编号',
         on_delete=models.CASCADE,
-        default='0'
     )
 
     StudentNo=models.ManyToManyField(
         'student',
         verbose_name='学生学号',
         related_name='student_courses',
-        default='0'
     )
 
 
@@ -79,7 +77,6 @@ class homework(models.Model):
         'course',
         verbose_name='课程编号',
         on_delete=models.CASCADE,
-        default='0'
     )
 
 
@@ -94,7 +91,6 @@ class question(models.Model):
         'homework',
         verbose_name='作业编号',
         on_delete=models.CASCADE,
-        default='0'
     )
 
 
@@ -110,7 +106,6 @@ class submission(models.Model):
         'homework',
         verbose_name='作业编号',
         on_delete=models.CASCADE,
-        default='0'
     )
 
 
@@ -123,7 +118,6 @@ class answer(models.Model):
         'submission',
         verbose_name='提交编号',
         on_delete = models.CASCADE,
-        default='0'
     )
 
 
@@ -141,7 +135,6 @@ class analysis(models.Model):
         'homework',
         verbose_name='作业编号',
         on_delete=models.CASCADE,
-        default='0'
     )
 
 

@@ -2,22 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8b48136d-dc28-40dc-8c45-1e3ba45c9b73" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/job/View/manager_homepage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/View/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/View/login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/View/stu_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/View/stu_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/View/stu_sign.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/View/tea_homepage.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/View/tea_homepage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/View/tea_homework.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/View/tea_homework.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/job/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/job/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/job/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobsystem/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobsystem/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobsystem/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobsystem/urls.py" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,23 +26,17 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -66,6 +48,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606058506253</updated>
+      <workItem from="1608300380596" duration="271000" />
     </task>
     <task id="LOCAL-00001" summary="这里输你commit的东西的描述就好了~ 然后commit">
       <created>1607236627528</created>
@@ -104,6 +87,9 @@
     </task>
     <option name="localTasksCounter" value="6" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
