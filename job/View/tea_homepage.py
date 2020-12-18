@@ -6,7 +6,7 @@ from job.views import t_chk_token, chk_course_id
 
 
 # 教师端主页-课程列表
-class teacher_homepage(APIView):
+class teacher_course(APIView):
     def get(self, request):
         token = request.META.get('token')
         cou_id = request.GET.get('course_id')

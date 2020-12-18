@@ -19,7 +19,7 @@ class login(APIView):
                 'code': 400
             }, status=400)
 
-        if ro == 1:
+        if ro == '1':
             try:
                 m= manager.objects.get(ManagerNo=uname)
             except:
@@ -39,9 +39,11 @@ class login(APIView):
                     'code': 403
                 }, status=403)
 
-        elif ro == 2:
+        elif ro == '2':
             try:
+                print(uname)
                 t= teacher.objects.get(TeacherNo = uname)
+
             except:
                 return Response({
                     'info': '用户名不存在',

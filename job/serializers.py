@@ -16,7 +16,7 @@ class TeacherSer(serializers.ModelSerializer):
 
 
 class StudentSer(serializers.ModelSerializer):
-    student_courses = serializers.StringRelatedField(many=True)
+    #student_courses = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = student
@@ -51,7 +51,8 @@ class StuAnswerSer(serializers.ModelSerializer):
 
 
 class CouSer(serializers.ModelSerializer):
-    course_students = serializers.StringRelatedField(many=True)
+    course_students = StudentSer(many=True)
+    teacher_name = serializers.CharField(source='TeacherNo.TeacherName')
 
     class Meta:
         model = course

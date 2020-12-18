@@ -15,8 +15,8 @@ urlpatterns=[
     # path('manager/', views..as_view(), name='')
     # path('manager/', views..as_view(), name='')
 
-    path('teacher/homepage/', views.teacher_homepage.as_view()),
-    path('student/homepage/', views.student_homepage.as_view()),
+    path('teacher/homepage/', views.teacher_course.as_view()),
+    path('student/homepage/', views.student_course.as_view()),
 
 ]
 

@@ -1,35 +1,22 @@
 from job.models import student
-from job.serializers import StudentSer
+from job.serializers import StudentSer, CouSer
 from rest_framework.views import APIView, Response
 from django.utils import timezone
 from job.views import s_chk_token, chk_course_id
 
 # 学生端主页-课程列表
-class student_homepage(APIView):
+class student_course(APIView):
     def get(self, request):
-        token = request.META.get('token')
-        cou_id = request.GET.get('course_id')
-        print(token)
-        print(cou_id)
+        token = request.META.get('HTTP_TOKEN')
 
         stu_id = s_chk_token(token)
         if isinstance(stu_id, Response):
             return stu_id
-        s = student.objects.get(pk=stu_id)
 
-        c = chk_course_id(cou_id)
-        if isinstance(c, Response):
-            return c
-        sh = student.objects.filter(StuNo=s, CuNo=c)
-        if sh:
-            sh = sh.get()
-            sh.last_modified = timezone.now()
-            sh.save()
-        else:
-            sh = student.objects.create(StuNo=s, CuNo=c)
+        course_list = student.objects.get(pk=stu_id).CourseNo.all()
 
         return Response({
             'info': 'success',
             'code': 200,
-            'data': StudentSer(sh).data
+            'data': CouSer(course_list, many=True).data
         }, status=200)
